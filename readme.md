@@ -15,9 +15,6 @@
     <a href="https://www.python.org/">
       <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
     </a>
-    <a href="https://flask.palletsprojects.com/">
-      <img src="https://img.shields.io/badge/Framework-Flask-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask">
-    </a>
     <a href="https://www.mongodb.com/">
       <img src="https://img.shields.io/badge/DB-MongoDB_Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
     </a>
