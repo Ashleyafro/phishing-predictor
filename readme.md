@@ -15,6 +15,9 @@
     <a href="https://www.python.org/">
       <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
     </a>
+    <a href="https://flask.palletsprojects.com/">
+      <img src="https://img.shields.io/badge/Framework-Flask-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask">
+    </a>
     <a href="https://www.mongodb.com/">
       <img src="https://img.shields.io/badge/DB-MongoDB_Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB">
     </a>
@@ -73,49 +76,56 @@ La robustez de PhishingPredictor reside en su pipeline de procesamiento modular.
 
 ```mermaid
 graph TD
-    %% Nodos
+    %% Nodos principales
     User((👤 Usuario))
     WebUI[🖥️ Frontend Web]
     Controller[⚙️ Flask Controller]
-    
-    subgraph "Nivel 1: Procesamiento Semántico (Cohere)"
+
+    %% Nivel 1
+    subgraph "Nivel 1: Procesamiento Semántico (Opcional)"
+        Prompt[📝 Prompt Engineering]
         LLM[🤖 Cohere API]
-        Prompt{📝 Prompt Engineering}
-    end
-    
-    subgraph "Nivel 2: Ingeniería de Características"
-        Cleaner[🧹 JSON Parser & Sanitizer]
-        Vector[🔢 Vectorizador NumPy]
-        Fallback[🛡️ Fallback System]
-    end
-    
-    subgraph "Nivel 3: Inferencia Matemática (ONNX)"
-        ModelURL[🧮 Modelo URL (RandomForest)]
-        ModelText[🧮 Modelo Texto (Transformer)]
-        Inference[⚡ ONNX Runtime]
-    end
-    
-    subgraph "Nivel 4: Persistencia"
-        Mongo[(🍃 MongoDB Atlas)]
-        GridFS[🗄️ GridFS Imagenes]
     end
 
-    %% Conexiones
+    %% Nivel 2
+    subgraph "Nivel 2: Ingeniería de Características"
+        Cleaner[🧹 Parser & Sanitización de Datos]
+        Vector[🔢 Extracción / Vectorización de Características]
+        Fallback[🛡️ Sistema de Reglas / Fallback]
+    end
+
+    %% Nivel 3
+    subgraph "Nivel 3: Inferencia Matemática (ONNX)"
+        Inference[⚡ ONNX Runtime]
+        ModelURL[🧮 Modelo URL (RandomForest)]
+        ModelText[🧮 Modelo Texto (Transformer)]
+    end
+
+    %% Nivel 4
+    subgraph "Nivel 4: Persistencia"
+        Mongo[(🍃 MongoDB Atlas)]
+        GridFS[🗄️ GridFS (Imágenes)]
+    end
+
+    %% Flujo
     User -->|Input| WebUI
     WebUI -->|POST Request| Controller
-    Controller -->|Raw Data| Prompt
+
+    Controller -->|Texto / URL crudo| Prompt
     Prompt --> LLM
-    LLM -->|Respuesta JSON| Cleaner
-    
-    Cleaner -- Éxito --> Vector
-    Cleaner -- Error --> Fallback
-    
+    LLM -->|Salida estructurada| Cleaner
+
+    Cleaner -- Datos válidos --> Vector
+    Cleaner -- Datos incompletos --> Fallback
+
     Vector --> Inference
+    Fallback --> Inference
+
     ModelURL -.-> Inference
     ModelText -.-> Inference
-    
-    Inference -->|Probabilidad %| Controller
-    Controller -->|Log| Mongo
+
+    Inference -->|Probabilidad + Clasificación| Controller
+    Controller -->|Persistencia| Mongo
     Controller -->|Respuesta + Explicación| WebUI
 
 ### 🧠 Componentes del Núcleo
