@@ -76,47 +76,40 @@ La robustez de PhishingPredictor reside en su pipeline de procesamiento modular.
 
 ```mermaid
 graph TD
-    %% Nodos principales
-    User((👤 Usuario))
-    WebUI[🖥️ Frontend Web]
-    Controller[⚙️ Flask Controller]
+    User((Usuario))
+    WebUI[Frontend Web]
+    Controller[Flask Controller]
 
-    %% Nivel 1
-    subgraph "Nivel 1: Procesamiento Semántico (Opcional)"
-        Prompt[📝 Prompt Engineering]
-        LLM[🤖 Cohere API]
+    subgraph Nivel_1_Procesamiento_Semantico
+        Prompt[Prompt Engineering]
+        LLM[Cohere API]
     end
 
-    %% Nivel 2
-    subgraph "Nivel 2: Ingeniería de Características"
-        Cleaner[🧹 Parser & Sanitización de Datos]
-        Vector[🔢 Extracción / Vectorización de Características]
-        Fallback[🛡️ Sistema de Reglas / Fallback]
+    subgraph Nivel_2_Ingenieria_Caracteristicas
+        Cleaner[Parser y Sanitizacion]
+        Vector[Extraccion de Caracteristicas]
+        Fallback[Sistema Fallback]
     end
 
-    %% Nivel 3
-    subgraph "Nivel 3: Inferencia Matemática (ONNX)"
-        Inference[⚡ ONNX Runtime]
-        ModelURL[🧮 Modelo URL (RandomForest)]
-        ModelText[🧮 Modelo Texto (Transformer)]
+    subgraph Nivel_3_Inferencia_ONNX
+        Inference[ONNX Runtime]
+        ModelURL[Modelo URL RandomForest]
+        ModelText[Modelo Texto Transformer]
     end
 
-    %% Nivel 4
-    subgraph "Nivel 4: Persistencia"
-        Mongo[(🍃 MongoDB Atlas)]
-        GridFS[🗄️ GridFS (Imágenes)]
+    subgraph Nivel_4_Persistencia
+        Mongo[MongoDB Atlas]
+        GridFS[GridFS Imagenes]
     end
 
-    %% Flujo
-    User -->|Input| WebUI
-    WebUI -->|POST Request| Controller
-
-    Controller -->|Texto / URL crudo| Prompt
+    User --> WebUI
+    WebUI --> Controller
+    Controller --> Prompt
     Prompt --> LLM
-    LLM -->|Salida estructurada| Cleaner
+    LLM --> Cleaner
 
-    Cleaner -- Datos válidos --> Vector
-    Cleaner -- Datos incompletos --> Fallback
+    Cleaner --> Vector
+    Cleaner --> Fallback
 
     Vector --> Inference
     Fallback --> Inference
@@ -124,9 +117,10 @@ graph TD
     ModelURL -.-> Inference
     ModelText -.-> Inference
 
-    Inference -->|Probabilidad + Clasificación| Controller
-    Controller -->|Persistencia| Mongo
-    Controller -->|Respuesta + Explicación| WebUI
+    Inference --> Controller
+    Controller --> Mongo
+    Controller --> WebUI
+
 
 ### 🧠 Componentes del Núcleo
 
